@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Arduino data realtime</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+
+    <h2>Arduino real time data</h2>
+
+    <ul id="messages"></ul>
+
+  </body>
+
+  <script src="/js/dependencies/sails.io.js"></script>
+  <script>
+    var $messages = document.querySelector('#messages');
+
+    function addMessage(content) {
+      $messages.innerHTML = '<li>' + content + '</li>' + $messages.innerHTML;
+    }
+
+    io.socket.get('/data', function(data, response) {
+      data.forEach(function(value) {
+        addMessage(JSON.stringify(value));
+      });
+    });
+
+    io.socket.on('data', function(response){
+      if (response.verb === 'created') {
+        addMessage(JSON.stringify(response.data));
+      }
+    });
+  </script>
+</html>
